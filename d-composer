@@ -1,0 +1,38 @@
+#!/bin/bash
+
+if [ $1 == '--root' ]
+then
+   USER_FLAG=''
+   COMMAND=${@:2}
+else
+   USER_FLAG='--user 1000:1000'
+   COMMAND=$1
+fi
+
+#IMAGE_NAME=$1
+CONTAINER_NAME="d-php-composer_container"
+
+run_container () {
+    echo "Mounting..."
+    sudo docker run -itd --restart=unless-stopped -v $PWD:/root:rw --name=$CONTAINER_NAME micobg/d-php-composer > /dev/null
+}
+
+# if container's status is not "Up"...
+if [ ! "$(sudo docker ps -q -f name=$CONTAINER_NAME)" ]
+then
+    # ...but exits (not running) => remove it before run it again
+    if [ "$(sudo docker ps -aq -f name=$CONTAINER_NAME)" ]
+    then
+        sudo docker rm $CONTAINER_NAME > /dev/null
+    fi
+
+    run_container
+# if the cotainer is not mounted on current directory => remove it and run it again
+elif [ "$(sudo docker inspect --format='{{.Mounts}}' $CONTAINER_NAME | sed -e 's/\[{/''/g; s/}\]/''/g' | awk '{print $2}')" != $PWD ]
+then
+    sudo docker rm -f $CONTAINER_NAME > /dev/null
+    run_container
+fi
+
+# run the command
+sudo docker exec $USER_FLAG $CONTAINER_NAME composer $COMMAND
