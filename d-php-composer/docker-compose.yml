@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  d-php-composer:
+    build: .
+    image: d-php-composer
+    container_name: d-php-composer_container
+    tty: true
+    restart: always
