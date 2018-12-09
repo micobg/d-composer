@@ -1,7 +1,7 @@
 # d-composer
 _PHP Composer Docker image_
 
-It allows you t run PHP Composer command without install it just by running **d-compose** command. Example:
+It allows you to run PHP Composer command without install it just by running **d-compose** command. Example:
 ```bash
 d-compose install
 ```
