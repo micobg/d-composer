@@ -9,7 +9,6 @@ else
    COMMAND=$1
 fi
 
-#IMAGE_NAME=$1
 CONTAINER_NAME="d-php-composer_container"
 
 run_container () {
